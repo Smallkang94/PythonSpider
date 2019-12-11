@@ -137,7 +137,7 @@ def parse_one_page(html):
     actor = doc('.star').items()
     time = doc('.releasetime').items()
     integer = doc('.integer').items()
-    fraction = doc('.fraction').items()    
+    fraction = doc('.fraction').items()     
     items = {'index':index.text(),
              'title':title.text().string.split(),
              'actor':actor.text().string.strip()[3:] if len(actor[item]) > 3 else '',
