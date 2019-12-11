@@ -63,7 +63,6 @@ from bs4 import BeautifulSoup
 from requests.exceptions import RequestException #导入异常处理模块
 import json
 
-
 #抓取单页url
 def get_one_page(url): 
     #添加请求头，模拟浏览器登录
@@ -89,7 +88,7 @@ def parse_one_page(html):
     for item in range(10):
         items = {'index':index[item].string,
                  'title':title[item].string.split(),
-                 'actor':actor[item].string.strip()[3:] if len(actor[item]) > 3 else '',
+                 'actor':actor[item].string.strip()[3:] if len(actor[item].string) > 3 else '',
                  'time':time[item].string.strip(),
                  'score':integer[item].string.strip() + fraction[item].string.strip()}
         print(items)
@@ -106,15 +105,15 @@ def main(offset):
     items = parse_one_page(html)
 
 if __name__ == '__main__':
-    for i in range(2):
+    for i in range(1):
         main(offset = i * 10)
 
-###############使用p解析#################
+
+###############使用pyquery解析#################
 import requests
 from pyquery import PyQuery as pq
 from requests.exceptions import RequestException #导入异常处理模块
 import json
-
 
 #抓取单页url
 def get_one_page(url): 
@@ -137,13 +136,14 @@ def parse_one_page(html):
     actor = doc('.star').items()
     time = doc('.releasetime').items()
     integer = doc('.integer').items()
-    fraction = doc('.fraction').items()     
-    items = {'index':index.text(),
-             'title':title.text().string.split(),
-             'actor':actor.text().string.strip()[3:] if len(actor[item]) > 3 else '',
-             'time':time.text().string.strip(),
-             'score':integer.text().string.strip() + fraction.text().string.strip()}
-    yield (items)
+    fraction = doc('.fraction').items()    
+#    item = []
+    for item in zip(index, title, actor, time, integer, fraction):
+        yield({'index':item[0].text(),
+             'title':item[1].text().split(),
+             'actor':item[2].text().strip()[3:] if len(item[2].text()) > 3 else '',
+             'time':item[3].text().strip(),
+             'score':item[4].text().strip() + item[5].text().strip()})
 
 #写入文件    
 def write_to_file(content):
@@ -153,12 +153,11 @@ def write_to_file(content):
 def main(offset):
     url = 'https://maoyan.com/board/4?offset=' + str(offset)
     html = get_one_page(url)  
-    items = parse_one_page(html)
-    for item in items:
+    for item in parse_one_page(html):
+        print(item)
         write_to_file(item)
 
 if __name__ == '__main__':
     for i in range(2):
         main(offset = i * 10)
-
 
