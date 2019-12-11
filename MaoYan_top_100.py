@@ -1,4 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 11 19:00:25 2019
 
+@author: S
+"""
 ##########使用requests，正则解析##########
 import requests
 import re
@@ -87,30 +92,4 @@ def main(offset):
 if __name__ == '__main__':
     for i in range(2):
         main(offset = i * 10)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
